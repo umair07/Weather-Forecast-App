@@ -19,13 +19,13 @@ public class AllTabsFragmentAdapter extends FragmentPagerAdapter {
 
 		switch (index) {
 		case 0:
-			// Top Rated fragment activity
+			// Top DashBoard Fragment activity
 			return new DashBoardFragment();
 		case 1:
-			// Games fragment activity
+			// Major City List fragment activity
 			return new MajorCityListFragment();
 		case 2:
-			// Movies fragment activity
+			// Map fragment activity
 			return new MapLocationFragment();
 		}
 
