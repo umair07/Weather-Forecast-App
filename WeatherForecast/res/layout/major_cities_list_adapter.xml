@@ -6,43 +6,32 @@
 
     <RelativeLayout
         android:id="@+id/layout_cities_list_item_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        style="@style/style_layout_cities_list_item_container" >
 
         <TextView
             android:id="@+id/textView_adapter_cities_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/style_textView_adapter_cities_name"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_margin="15dp"
             android:text="Islamabad"
             android:textColor="@color/black"
-            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textView_adapter_temprature_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/style_textView_adapter_temprature_value"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_margin="15dp"
             android:text="160 F"
             android:textColor="@color/black"
-            android:textSize="20sp"
             android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imageView_adapter_temprature_type"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            style="@style/style_imageView_adapter_temprature_type"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/textView_adapter_temprature_value"
-            android:layout_marginRight="30dp"
-            android:layout_margin="10dp"
             android:background="@drawable/rain_l" />
-
     </RelativeLayout>
 
 </RelativeLayout>
