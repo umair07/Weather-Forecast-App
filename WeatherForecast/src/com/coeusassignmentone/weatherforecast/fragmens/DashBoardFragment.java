@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.coeusassignmentone.weatherforecast.R;
 
@@ -26,7 +27,8 @@ public class DashBoardFragment extends Fragment implements OnClickListener{
 			Bundle savedInstanceState) {
 
 		rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
+		loadUIComponents();
+		registerClickListeners();
 		return rootView;
 	}
 	// Initialize all UI components
@@ -39,7 +41,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener{
 		textView_dashboard_highest_temprature = (TextView)rootView.findViewById(R.id.textView_dashboard_highest_temprature);
 		textView_dashboard_lowest_temprature = (TextView)rootView.findViewById(R.id.textView_dashboard_lowest_temprature);
 		textView_dashboard_wind_speed = (TextView)rootView.findViewById(R.id.textView_dashboard_wind_speed);
-		textView_dashboard_pressuer = (TextView)rootView.findViewById(R.id.textView_dashboard_wind_speed);
+		textView_dashboard_pressuer = (TextView)rootView.findViewById(R.id.textView_dashboard_pressuer);
 		editText_dashboard_sreach_city = (EditText)rootView.findViewById(R.id.editText_dashboard_sreach_city);
 		imageView_dashboard_timeticker = (ImageView)rootView.findViewById(R.id.imageView_dashboard_timeticker);
 		imageView_dashboard_select_scale = (ImageView)rootView.findViewById(R.id.imageView_dashboard_select_scale);

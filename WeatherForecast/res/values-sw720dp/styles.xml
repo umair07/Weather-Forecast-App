@@ -4,29 +4,29 @@
 
     <style name="style_layout_cities_list_item_container">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">150dp</item>
     </style>
 
     <style name="style_textView_adapter_cities_name">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:layout_margin">15dp</item>
+        <item name="android:textSize">60sp</item>
+        <item name="android:layout_margin">30dp</item>
     </style>
 
     <style name="style_textView_adapter_temprature_value">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:layout_margin">15dp</item>
+        <item name="android:textSize">50sp</item>
+        <item name="android:layout_margin">25dp</item>
     </style>
 
     <style name="style_imageView_adapter_temprature_type">
-        <item name="android:layout_width">60dp</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">130dp</item>
+        <item name="android:layout_height">130dp</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_margin">10dp</item>
-        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:layout_margin">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
     </style>
     <!-- *************************************************************** -->
 

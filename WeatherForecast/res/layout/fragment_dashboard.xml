@@ -154,6 +154,7 @@
             android:id="@+id/imageView_dashboard_lowest_symbol"
             style="@style/style_layout_temprature_lowest_details_container"
             android:layout_gravity="center_vertical"
+            android:layout_marginBottom="3dp"
             android:background="@drawable/icon_lowest" />
 
         <TextView
