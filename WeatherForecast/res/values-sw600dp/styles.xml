@@ -4,28 +4,28 @@
 
     <style name="style_layout_cities_list_item_container">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">120dp</item>
     </style>
 
     <style name="style_textView_adapter_cities_name">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:layout_margin">15dp</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:layout_margin">20dp</item>
     </style>
 
     <style name="style_textView_adapter_temprature_value">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:layout_margin">15dp</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:layout_margin">20dp</item>
     </style>
 
     <style name="style_imageView_adapter_temprature_type">
-        <item name="android:layout_width">60dp</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:layout_margin">15dp</item>
         <item name="android:layout_marginRight">30dp</item>
     </style>
     <!-- *************************************************************** -->
@@ -43,7 +43,7 @@
     <style name="style_textView_dashboard_date">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">25sp</item>
     </style>
 
     <style name="style_layout_refeshdata_container">

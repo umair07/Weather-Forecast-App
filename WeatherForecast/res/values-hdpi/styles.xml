@@ -43,7 +43,7 @@
     <style name="style_textView_dashboard_date">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">11sp</item>
     </style>
 
     <style name="style_layout_refeshdata_container">

@@ -10,14 +10,14 @@
     <style name="style_textView_adapter_cities_name">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">25sp</item>
         <item name="android:layout_margin">15dp</item>
     </style>
 
     <style name="style_textView_adapter_temprature_value">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">25sp</item>
         <item name="android:layout_margin">15dp</item>
     </style>
 
@@ -37,13 +37,13 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginTop">20dp</item>
     </style>
 
     <style name="style_textView_dashboard_date">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
     <style name="style_layout_refeshdata_container">
@@ -72,7 +72,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:layout_marginTop">35dp</item>
+        <item name="android:layout_marginTop">45dp</item>
     </style>
 
     <style name="style_textView_dashboard_time">
