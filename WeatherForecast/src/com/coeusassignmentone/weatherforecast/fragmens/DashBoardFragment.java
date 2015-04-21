@@ -66,6 +66,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 		rootView.getContext().registerReceiver(updateWeatherDataBroadCastReceiver,
 				new IntentFilter("weatherdailyupdate"));
 
+
 		return rootView;
 	}
 	// Initialize all UI components
