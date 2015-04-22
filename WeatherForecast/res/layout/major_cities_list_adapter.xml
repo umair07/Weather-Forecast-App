@@ -32,6 +32,13 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/textView_adapter_temprature_value"
             android:background="@drawable/rain_l" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
 </RelativeLayout>

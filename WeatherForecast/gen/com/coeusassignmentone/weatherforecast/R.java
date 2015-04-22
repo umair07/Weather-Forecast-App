@@ -543,7 +543,7 @@ containing a value of this type.
         public static final int thunderstorm_l=0x7f020040;
     }
     public static final class id {
-        public static final int action_settings=0x7f0b003d;
+        public static final int action_settings=0x7f0b003e;
         public static final int adjust_height=0x7f0b0000;
         public static final int adjust_width=0x7f0b0001;
         public static final int book_now=0x7f0b0010;
@@ -588,6 +588,7 @@ containing a value of this type.
         public static final int none=0x7f0b0002;
         public static final int normal=0x7f0b0004;
         public static final int production=0x7f0b0009;
+        public static final int progressBar=0x7f0b003d;
         public static final int sandbox=0x7f0b000a;
         public static final int satellite=0x7f0b0005;
         public static final int selectionDetails=0x7f0b000d;

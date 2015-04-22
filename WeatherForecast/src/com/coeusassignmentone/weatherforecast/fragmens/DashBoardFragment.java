@@ -2,12 +2,16 @@ package com.coeusassignmentone.weatherforecast.fragmens;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -22,7 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coeusassignmentone.weatherforecast.R;
-import com.coeusassignmentone.weatherforecast.backgroundservices.WeatherUpdateAsyncTask;
+import com.coeusassignmentone.weatherforecast.location_manager.GPSTracker;
+import com.coeusassignmentone.weatherforecast.services.WeatherUpdateAsyncTask;
 
 public class DashBoardFragment extends Fragment implements OnClickListener {
 
@@ -38,8 +43,8 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 	private String internetMessage = "No Internet Connection";
 	protected final static String TEMP_SYM_C = (char) 0x00B0 + "C";
 	protected final static String TEMP_SYM_F = (char) 0x00B0 + "F";
-	private static String tempratureValue;
-
+	GPSTracker gpsTracker;
+	double latitude,longitude;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -48,16 +53,31 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 		loadUIComponents();
 		registerClickListeners();
 
+		gpsTracker = new GPSTracker(getActivity());
+		// check if GPS enabled		
+		if(gpsTracker.canGetLocation()){
 
+			latitude = gpsTracker.getLatitude();
+			longitude = gpsTracker.getLongitude();
+
+			// \n is for new line
+		}else{
+			// can't get location
+			// GPS or Network is not enabled
+			// Ask user to enable GPS/network in settings
+			gpsTracker.showSettingsAlert();
+		}
 		weatherUpdateAsyncTask = new WeatherUpdateAsyncTask(getActivity());
 
 		if(isConnectingToInternet())
 		{
-			weatherUpdateAsyncTask.execute("Lahore");
+
+			weatherUpdateAsyncTask.execute(getCityName(latitude,longitude));
 
 		}
 		else
 		{
+			weatherUpdateAsyncTask.execute("N/A");
 			Toast.makeText(getActivity(), internetMessage, Toast.LENGTH_SHORT).show();
 		}
 
@@ -106,17 +126,28 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.imageView_dashboard_select_scale:
 			try {
-				convertTemprature();
+				convertTemprature(textView_dashboard_temprature.getText().toString());
 			} catch (Exception e) {
 				e.getStackTrace();
 			}
-			
+
 			break;	
 		case R.id.imageView_dashboard_refresh_data:
+			if(isConnectingToInternet())
+			{
+
+				weatherUpdateAsyncTask.execute(textView_dashboard_city.getText().toString());
+
+			}
+			else
+			{
+				weatherUpdateAsyncTask.execute("N/A");
+				Toast.makeText(getActivity(), internetMessage, Toast.LENGTH_SHORT).show();
+			}
 
 			break;
 		case R.id.imageView_dashboard_sreach:
-			
+
 
 			if(isConnectingToInternet())
 			{
@@ -188,7 +219,6 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 				}
 				if(!intent.getStringExtra("temp").equals(""))
 				{
-					tempratureValue = intent.getStringExtra("temp") +TEMP_SYM_F;
 					textView_dashboard_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
 				}
 				else
@@ -286,7 +316,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 				SimpleDateFormat df = new SimpleDateFormat("hh:mm aa");
 				Calendar c = Calendar.getInstance();
 				textView_dashboard_time.setText(df.format(c.getTime()));
-				
+
 
 
 
@@ -295,28 +325,54 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 			}
 		}
 	};
-	
-	public void convertTemprature()
+
+	public void convertTemprature(String pTempratureValue)
 	{
-		if(tempratureValue.contains("F"))
+
+		String[] splitedValuesTemprature = pTempratureValue.split(""+(char) 0x00B0);
+		String tempratureValue = splitedValuesTemprature[0];
+		String tempratureUnit = splitedValuesTemprature[1]; 
+		if(tempratureUnit.contains("F"))
 		{
-			imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
-			
-			
-			
-			textView_dashboard_temprature.setText("" + TEMP_SYM_C);
-			textView_dashboard_highest_temprature.setText("" + TEMP_SYM_C); 
-			textView_dashboard_lowest_temprature.setText("" + TEMP_SYM_C); 
-		}
-		else if(tempratureValue.contains("C"))
-		{
+
+			double farnhiteTemprature = Double.parseDouble(tempratureValue);
+			double celsiusValue = (farnhiteTemprature- 32) * (5 / 9.0);
+			double finalTemprature_C =  (Math.round( celsiusValue * 100.0 ) / 100.0);
 			imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_f);
-			textView_dashboard_temprature.setText("" + TEMP_SYM_C);
-			textView_dashboard_highest_temprature.setText("" + TEMP_SYM_C); 
-			textView_dashboard_lowest_temprature.setText("" + TEMP_SYM_C); 
+			textView_dashboard_temprature.setText(finalTemprature_C + TEMP_SYM_C);
+			textView_dashboard_highest_temprature.setText(finalTemprature_C + TEMP_SYM_C); 
+			textView_dashboard_lowest_temprature.setText(finalTemprature_C + TEMP_SYM_C); 
 		}
-		
-		
+		else if(tempratureUnit.contains("C"))
+		{
+			double celsuicTemprature = Double.parseDouble(tempratureValue);
+			double franhiteValue =  ((celsuicTemprature * 9 / 5.0) + 32);
+			int finalTemprature_F = (int) (Math.round( franhiteValue * 100.0 ) / 100.0);
+			imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
+			textView_dashboard_temprature.setText(finalTemprature_F + TEMP_SYM_F);
+			textView_dashboard_highest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
+			textView_dashboard_lowest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
+		}
+
+
 	}
 
+	public String getCityName(double pLatitude, double pLongitude)
+	{
+		Geocoder geocoder = new Geocoder(getActivity(), Locale.ENGLISH);
+		String cityName = null;
+		try {
+			List<Address> addresses = geocoder.getFromLocation(pLatitude, pLongitude, 1);
+
+			if(addresses != null) {
+				Address returnedAddress = addresses.get(0);
+				cityName = returnedAddress.getLocality();
+			}
+		}
+		catch (Exception e)
+		{
+
+		}
+		return cityName;
+	}
 }
