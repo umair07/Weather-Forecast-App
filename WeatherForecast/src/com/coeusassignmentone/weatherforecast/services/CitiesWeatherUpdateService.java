@@ -5,14 +5,9 @@ import org.json.JSONObject;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 
-import com.coeusassignmentone.weatherforecast.datamodel.CitiesWeatherDetailsModel;
-import com.coeusassignmentone.weatherforecast.datamodel.WeatherDetailsModel;
 import com.coeusassignmentone.weatherforecast.handlers.ServiceHandler;
 
 public class CitiesWeatherUpdateService extends IntentService{
@@ -37,9 +32,12 @@ public class CitiesWeatherUpdateService extends IntentService{
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		// TODO Auto-generated method stub
+		try
+		{
 		updateAdapterItem(intent.getStringExtra("cityname"));
-
-		//runnable.run();
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
 	}
 
 	private void updateAdapterItem(String city)
@@ -69,7 +67,7 @@ public class CitiesWeatherUpdateService extends IntentService{
 			JSONObject atmosphere =channel.getJSONObject("atmosphere");
 
 			try {
-				Intent sendWeatherDailyUpdate = new Intent("weatherdailyupdate");
+				Intent sendWeatherDailyUpdate = new Intent("majorcitiesupdate");
 				sendWeatherDailyUpdate.putExtra("city",location.getString("city"));
 				sendWeatherDailyUpdate.putExtra("temp",condition.getString("temp"));
 				sendWeatherDailyUpdate.putExtra("text",condition.getString("text"));

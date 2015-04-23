@@ -18,15 +18,16 @@ import com.coeusassignmentone.weatherforecast.datamodel.CitiesWeatherDetailsMode
 public class MajorCitiesListAdapter extends BaseAdapter {
 
 	private ArrayList<CitiesWeatherDetailsModel> weatherCitiesData = new ArrayList<CitiesWeatherDetailsModel>();
+	private ArrayList<String> citiesNameList= new ArrayList<String>();
 	private Context contextMajorCitiesListAdapter;
 	private LayoutInflater inflater;
 
-	public MajorCitiesListAdapter(ArrayList<CitiesWeatherDetailsModel> weatherCitiesData, Context contextMajorCitiesListAdapter
+	public MajorCitiesListAdapter(ArrayList<String> citiesNameList, ArrayList<CitiesWeatherDetailsModel> weatherCitiesData, Context contextMajorCitiesListAdapter
 			) {
 
 		this.weatherCitiesData = weatherCitiesData;
 		this.contextMajorCitiesListAdapter = contextMajorCitiesListAdapter;
-
+		this.citiesNameList = citiesNameList;
 		inflater = (LayoutInflater)contextMajorCitiesListAdapter.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
@@ -59,16 +60,31 @@ public class MajorCitiesListAdapter extends BaseAdapter {
 		TextView adapterCityName = (TextView)view.findViewById(R.id.textView_adapter_cities_name);
 		TextView adapterTempratureValue = (TextView)view.findViewById(R.id.textView_adapter_temprature_value);
 		ImageView adapterTempratureImage = (ImageView)view.findViewById(R.id.imageView_adapter_temprature_type);
-		ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
-		adapterCityName.setText(weatherCitiesData.get(position).getCityName());
-		adapterTempratureValue.setText(weatherCitiesData.get(position).getTempratureValue());
-		//		adapterTempratureImage.setBackground(contextMajorCitiesListAdapter.getResources().getDrawable(R.drawable.rain_l));
+		ProgressBar progressBarTempratureValue  = (ProgressBar)view.findViewById(R.id.progressBar_tempratureValue);
+		ProgressBar progressBarTempratureImage = (ProgressBar)view.findViewById(R.id.progressBar_temprature_type);
+	try {
+	
+		adapterCityName.setText(citiesNameList.get(position));
+		
+		if(!weatherCitiesData.get(position).getTempratureValue().equals(""))
+		{
+			
+			progressBarTempratureValue.setVisibility(View.GONE);
+			adapterTempratureValue.setVisibility(View.VISIBLE);
+			adapterTempratureValue.setText(weatherCitiesData.get(position).getTempratureValue());
+
+		}
+		
+	
 		if(!weatherCitiesData.get(position).getWeatherType().equals(""))
 		{
 			String  input = weatherCitiesData.get(position).getWeatherType();
 			input = input.replace(" ", "");
+			progressBarTempratureImage.setVisibility(View.GONE);
+			adapterTempratureImage.setVisibility(View.VISIBLE);
 			if(input.toLowerCase().equals("brokenclouds"))
 			{
+				
 				adapterTempratureImage.setImageResource(R.drawable.broken_clouds_l);
 
 			} else if(input.toLowerCase().equals("clearsky"))
@@ -109,6 +125,10 @@ public class MajorCitiesListAdapter extends BaseAdapter {
 				adapterTempratureImage.setImageResource(R.drawable.clear_sky_l);
 			}
 
+		}
+		
+		} catch (Exception e) {
+			e.getStackTrace();
 		}
 		return view;
 	}

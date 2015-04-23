@@ -5,6 +5,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,12 +19,14 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +52,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 	protected final static String TEMP_SYM_F = (char) 0x00B0 + "F";
 	GPSTracker gpsTracker;
 	double latitude,longitude;
+	public static double loc_latitude,loc_longitude;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -52,35 +60,45 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 		rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 		loadUIComponents();
 		registerClickListeners();
-
-		gpsTracker = new GPSTracker(getActivity());
-		// check if GPS enabled		
-		if(gpsTracker.canGetLocation()){
-
-			latitude = gpsTracker.getLatitude();
-			longitude = gpsTracker.getLongitude();
-
-			// \n is for new line
-		}else{
-			// can't get location
-			// GPS or Network is not enabled
-			// Ask user to enable GPS/network in settings
-			gpsTracker.showSettingsAlert();
-		}
-		weatherUpdateAsyncTask = new WeatherUpdateAsyncTask(getActivity());
-
-		if(isConnectingToInternet())
+		try
 		{
+			gpsTracker = new GPSTracker(getActivity());
+			// check if GPS enabled		
+			if(gpsTracker.canGetLocation()){
 
-			weatherUpdateAsyncTask.execute(getCityName(latitude,longitude));
+ 				latitude = gpsTracker.getLatitude();
+				longitude = gpsTracker.getLongitude();
+				loc_latitude = latitude;
+				loc_longitude = longitude;
 
+				// \n is for new line
+			}else{
+				// can't get location
+				// GPS or Network is not enabled
+				// Ask user to enable GPS/network in settings
+				gpsTracker.showSettingsAlert();
+			}
+		} catch (Exception e) {
+			e.getStackTrace();
 		}
-		else
+		try
 		{
-			weatherUpdateAsyncTask.execute("N/A");
-			Toast.makeText(getActivity(), internetMessage, Toast.LENGTH_SHORT).show();
-		}
+			weatherUpdateAsyncTask = new WeatherUpdateAsyncTask(getActivity());
 
+			if(isConnectingToInternet())
+			{
+
+				weatherUpdateAsyncTask.execute(getCityName(latitude,longitude));
+
+			}
+			else
+			{
+				weatherUpdateAsyncTask.execute("N/A");
+				Toast.makeText(getActivity(), internetMessage, Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
 
 		// setWeatherData() function call
 		rootView.getContext().registerReceiver(updateWeatherDataBroadCastReceiver,
@@ -133,38 +151,48 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 
 			break;	
 		case R.id.imageView_dashboard_refresh_data:
-			if(isConnectingToInternet())
-			{
-
-				weatherUpdateAsyncTask.execute(textView_dashboard_city.getText().toString());
-
-			}
-			else
-			{
-				weatherUpdateAsyncTask.execute("N/A");
-				Toast.makeText(getActivity(), internetMessage, Toast.LENGTH_SHORT).show();
-			}
-
-			break;
-		case R.id.imageView_dashboard_sreach:
-
-
-			if(isConnectingToInternet())
-			{
-				if(!editText_dashboard_sreach_city.getText().toString().equals(""))
+			try{
+				weatherUpdateAsyncTask = new WeatherUpdateAsyncTask(getActivity());
+				if(isConnectingToInternet())
 				{
-					weatherUpdateAsyncTask = new WeatherUpdateAsyncTask(getActivity());
-					weatherUpdateAsyncTask.execute(editText_dashboard_sreach_city.getText().toString());
+
+					weatherUpdateAsyncTask.execute(textView_dashboard_city.getText().toString());
+
 				}
 				else
 				{
-					Toast.makeText(getActivity(), "Enter City Name", Toast.LENGTH_SHORT).show();
+					weatherUpdateAsyncTask.execute("N/A");
+					Toast.makeText(getActivity(), internetMessage, Toast.LENGTH_SHORT).show();
 				}
-
+			} catch (Exception e) {
+				e.getStackTrace();
 			}
-			else
+			break;
+		case R.id.imageView_dashboard_sreach:
+			try
 			{
-				Toast.makeText(getActivity(), internetMessage, Toast.LENGTH_SHORT).show();
+				if(isConnectingToInternet())
+				{
+					if(!editText_dashboard_sreach_city.getText().toString().equals(""))
+					{
+						weatherUpdateAsyncTask = new WeatherUpdateAsyncTask(getActivity());
+						weatherUpdateAsyncTask.execute(editText_dashboard_sreach_city.getText().toString());
+					}
+					else
+					{
+						Toast.makeText(getActivity(), "Enter City Name", Toast.LENGTH_SHORT).show();
+					}
+
+				}
+				else
+				{
+					Toast.makeText(getActivity(), internetMessage, Toast.LENGTH_SHORT).show();
+				}
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+						Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(editText_dashboard_sreach_city.getWindowToken(), 0);
+			} catch (Exception e) {
+				e.getStackTrace();
 			}
 			break;
 		default:
@@ -177,7 +205,12 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 	public void onDetach() {
 		// TODO Auto-generated method stub
 		super.onDetach();
-		getActivity().unregisterReceiver(updateWeatherDataBroadCastReceiver);
+		try
+		{
+			getActivity().unregisterReceiver(updateWeatherDataBroadCastReceiver);
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
 	}
 	// check internet connection
 
@@ -197,7 +230,9 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			try {
+				imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
 				textView_dashboard_date.setText("Last Update: "+intent.getStringExtra("lastBuildDate"));
+				
 				if(!intent.getStringExtra("city").equals(""))
 				{
 					textView_dashboard_city.setText(intent.getStringExtra("city"));
@@ -313,6 +348,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 					String img_Name = "";
 
 				}
+
 				SimpleDateFormat df = new SimpleDateFormat("hh:mm aa");
 				Calendar c = Calendar.getInstance();
 				textView_dashboard_time.setText(df.format(c.getTime()));
@@ -332,33 +368,38 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 		String[] splitedValuesTemprature = pTempratureValue.split(""+(char) 0x00B0);
 		String tempratureValue = splitedValuesTemprature[0];
 		String tempratureUnit = splitedValuesTemprature[1]; 
-		if(tempratureUnit.contains("F"))
+		try
 		{
+			if(tempratureUnit.contains("F"))
+			{
 
-			double farnhiteTemprature = Double.parseDouble(tempratureValue);
-			double celsiusValue = (farnhiteTemprature- 32) * (5 / 9.0);
-			double finalTemprature_C =  (Math.round( celsiusValue * 100.0 ) / 100.0);
-			imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_f);
-			textView_dashboard_temprature.setText(finalTemprature_C + TEMP_SYM_C);
-			textView_dashboard_highest_temprature.setText(finalTemprature_C + TEMP_SYM_C); 
-			textView_dashboard_lowest_temprature.setText(finalTemprature_C + TEMP_SYM_C); 
+				double farnhiteTemprature = Double.parseDouble(tempratureValue);
+				double celsiusValue = (farnhiteTemprature- 32) * (5 / 9.0);
+				double finalTemprature_C =  (Math.round( celsiusValue * 100.0 ) / 100.0);
+				imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_f);
+				textView_dashboard_temprature.setText(finalTemprature_C + TEMP_SYM_C);
+				textView_dashboard_highest_temprature.setText(finalTemprature_C + TEMP_SYM_C); 
+				textView_dashboard_lowest_temprature.setText(finalTemprature_C + TEMP_SYM_C); 
+			}
+			else if(tempratureUnit.contains("C"))
+			{
+				double celsuicTemprature = Double.parseDouble(tempratureValue);
+				double franhiteValue =  ((celsuicTemprature * 9 / 5.0) + 32);
+				int finalTemprature_F = (int) (Math.round( franhiteValue * 100.0 ) / 100.0);
+				imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
+				textView_dashboard_temprature.setText(finalTemprature_F + TEMP_SYM_F);
+				textView_dashboard_highest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
+				textView_dashboard_lowest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
+			}
+
+		} catch (Exception e) {
+			e.getStackTrace();
 		}
-		else if(tempratureUnit.contains("C"))
-		{
-			double celsuicTemprature = Double.parseDouble(tempratureValue);
-			double franhiteValue =  ((celsuicTemprature * 9 / 5.0) + 32);
-			int finalTemprature_F = (int) (Math.round( franhiteValue * 100.0 ) / 100.0);
-			imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
-			textView_dashboard_temprature.setText(finalTemprature_F + TEMP_SYM_F);
-			textView_dashboard_highest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
-			textView_dashboard_lowest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
-		}
-
-
 	}
 
 	public String getCityName(double pLatitude, double pLongitude)
 	{
+
 		Geocoder geocoder = new Geocoder(getActivity(), Locale.ENGLISH);
 		String cityName = null;
 		try {
@@ -368,11 +409,11 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 				Address returnedAddress = addresses.get(0);
 				cityName = returnedAddress.getLocality();
 			}
-		}
-		catch (Exception e)
-		{
-
+		} catch (Exception e) {
+			e.getStackTrace();
 		}
 		return cityName;
 	}
+	
+	
 }

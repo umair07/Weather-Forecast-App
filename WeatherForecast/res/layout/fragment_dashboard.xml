@@ -82,6 +82,7 @@
             android:id="@+id/editText_dashboard_sreach_city"
             style="@style/style_editText_dashboard_sreach_city"
             android:layout_gravity="center_vertical"
+            android:singleLine="true"
             android:hint="@string/search_hint"
             android:textColor="@color/black" />
 
@@ -89,7 +90,7 @@
             android:id="@+id/imageView_dashboard_sreach"
             style="@style/style_imageView_dashboard_sreach"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/selector_btn_search_city" />
+            android:src="@drawable/selector_btn_search_city" />
     </LinearLayout>
 
     <LinearLayout

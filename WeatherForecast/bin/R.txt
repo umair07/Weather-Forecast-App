@@ -165,7 +165,7 @@ int drawable shower_l 0x7f02003d
 int drawable snow_l 0x7f02003e
 int drawable splash 0x7f02003f
 int drawable thunderstorm_l 0x7f020040
-int id action_settings 0x7f0b003e
+int id action_settings 0x7f0b003f
 int id adjust_height 0x7f0b0000
 int id adjust_width 0x7f0b0001
 int id book_now 0x7f0b0010
@@ -179,7 +179,7 @@ int id grayscale 0x7f0b0015
 int id holo_dark 0x7f0b0007
 int id holo_light 0x7f0b0008
 int id hybrid 0x7f0b0003
-int id imageView_adapter_temprature_type 0x7f0b003c
+int id imageView_adapter_temprature_type 0x7f0b003e
 int id imageView_dashboard_highest_symbol 0x7f0b002c
 int id imageView_dashboard_location_marker 0x7f0b0022
 int id imageView_dashboard_lowest_symbol 0x7f0b002f
@@ -210,7 +210,8 @@ int id monochrome 0x7f0b0016
 int id none 0x7f0b0002
 int id normal 0x7f0b0004
 int id production 0x7f0b0009
-int id progressBar 0x7f0b003d
+int id progressBar_tempratureValue 0x7f0b003b
+int id progressBar_temprature_type 0x7f0b003d
 int id sandbox 0x7f0b000a
 int id satellite 0x7f0b0005
 int id selectionDetails 0x7f0b000d
@@ -218,7 +219,7 @@ int id slide 0x7f0b0017
 int id strict_sandbox 0x7f0b000b
 int id terrain 0x7f0b0006
 int id textView_adapter_cities_name 0x7f0b003a
-int id textView_adapter_temprature_value 0x7f0b003b
+int id textView_adapter_temprature_value 0x7f0b003c
 int id textView_dashboard_city 0x7f0b0023
 int id textView_dashboard_date 0x7f0b001a
 int id textView_dashboard_highest_temprature 0x7f0b002d

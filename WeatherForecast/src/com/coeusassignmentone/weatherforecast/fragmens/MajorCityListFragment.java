@@ -24,7 +24,7 @@ public class MajorCityListFragment extends Fragment {
 	View rootView;
 	MajorCitiesListAdapter majorCitiesListAdapter;
 	ArrayList<String> citiesNameList;
-	static ArrayList<CitiesWeatherDetailsModel> weatherCitiesData;
+	 ArrayList<CitiesWeatherDetailsModel> weatherCitiesData;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,6 +32,8 @@ public class MajorCityListFragment extends Fragment {
 
 		rootView = inflater.inflate(R.layout.fragment_major_city_list, container, false);
 		loadUIComponents();
+		try
+		{
 		citiesNameList = new ArrayList<String>();
 		citiesNameList.add("Lahore");
 		citiesNameList.add("Islamabad");
@@ -42,15 +44,18 @@ public class MajorCityListFragment extends Fragment {
 		citiesNameList.add("Sialkot");
 		weatherCitiesData = new ArrayList<CitiesWeatherDetailsModel>();
 		getActivity().registerReceiver(updateCitiesDataBroadCastReceiver,
-				new IntentFilter("weatherdailyupdate"));
+				new IntentFilter("majorcitiesupdate"));
 		for (int i = 0; i < citiesNameList.size(); i++) {
 			Intent startWeatherService = new Intent(getActivity(),CitiesWeatherUpdateService.class);
 			startWeatherService.putExtra("cityname", citiesNameList.get(i));
 			getActivity().startService(startWeatherService);
 
 		}
-		majorCitiesListAdapter = new MajorCitiesListAdapter(weatherCitiesData, getActivity());
-		listView_MajorCities_Details.setAdapter(majorCitiesListAdapter);
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+//		majorCitiesListAdapter = new MajorCitiesListAdapter(weatherCitiesData, getActivity());
+//		listView_MajorCities_Details.setAdapter(majorCitiesListAdapter);
 
 		return rootView;
 	}
@@ -58,6 +63,7 @@ public class MajorCityListFragment extends Fragment {
 	// Initialize all UI components
 	public void loadUIComponents()
 	{
+		
 		listView_MajorCities_Details = (ListView)rootView.findViewById(R.id.listView_MajorCities);
 	}
 
@@ -82,65 +88,16 @@ public class MajorCityListFragment extends Fragment {
 				// TODO: handle exception
 			}
 			
-			//			try {
-			//				adapterCityName.setText(intent.getStringExtra());
-			//				adapterTempratureValue.setText(intent.getStringExtra());
-			//
-			//				if(!intent.getStringExtra("text").equals(""))
-			//				{
-			//					String  input = intent.getStringExtra("text");
-			//					input = input.replace(" ", "");
-			//					try {
-			//						if(input.toLowerCase().equals("brokenclouds"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.broken_clouds_l);
-			//
-			//						} else if(input.toLowerCase().equals("clearsky"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.clear_sky_l);
-			//
-			//						}else if(input.toLowerCase().equals("fewclouds"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.few_clouds_l);
-			//
-			//						}else if(input.toLowerCase().equals("mist"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.mist_l);
-			//
-			//						}else if(input.toLowerCase().equals("rain"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.rain_l);
-			//
-			//						}else if(input.toLowerCase().equals("scatteredclouds"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.scattered_clouds_l);
-			//
-			//						}else if(input.toLowerCase().equals("shower"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.shower_l);
-			//
-			//						}else if(input.toLowerCase().equals("snow"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.snow_l);
-			//
-			//						}else if(input.toLowerCase().equals("thunderstorm"))
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.thunderstorm_l);
-			//
-			//						}
-			//						else
-			//						{
-			//							adapterTempratureImage.setImageResource(R.drawable.clear_sky_l);
-			//						}
-			//					} catch (Exception e) {
-			//						// TODO: handle exception
-			//					}
-			//
-			//				}
-			//			} catch (Exception e) {
-			//				// TODO: handle exception
-			//			}
+			try
+			{
+			majorCitiesListAdapter = new MajorCitiesListAdapter(citiesNameList,weatherCitiesData, getActivity());
+			listView_MajorCities_Details.setAdapter(majorCitiesListAdapter);
+			} catch (Exception e) {
+				e.getStackTrace();
+			}
 		}
+		
+		
 	};
 
 
