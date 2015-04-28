@@ -71,6 +71,8 @@ public class CitiesWeatherUpdateService extends IntentService{
 				sendWeatherDailyUpdate.putExtra("city",location.getString("city"));
 				sendWeatherDailyUpdate.putExtra("temp",condition.getString("temp"));
 				sendWeatherDailyUpdate.putExtra("text",condition.getString("text"));
+				sendWeatherDailyUpdate.putExtra("lat",item.getString("lat"));
+				sendWeatherDailyUpdate.putExtra("long",item.getString("long"));
 				sendBroadcast(sendWeatherDailyUpdate);
 			} catch (Exception e) {
 				// TODO: handle exception
@@ -80,6 +82,16 @@ public class CitiesWeatherUpdateService extends IntentService{
 		catch(Exception e)
 		{
 			e.getMessage();
+			try {
+				Intent sendWeatherDailyUpdate = new Intent("majorcitiesupdate");
+				sendWeatherDailyUpdate.putExtra("city",city);
+				sendWeatherDailyUpdate.putExtra("temp","N/A");
+				sendWeatherDailyUpdate.putExtra("text","N/A");
+				sendWeatherDailyUpdate.putExtra("lat","");
+				sendWeatherDailyUpdate.putExtra("long","");
+				sendBroadcast(sendWeatherDailyUpdate);
+			} catch (Exception e1) {
+			}
 		}
 
 	}
@@ -97,4 +109,5 @@ public class CitiesWeatherUpdateService extends IntentService{
 		return false;
 	}
 
+	
 }

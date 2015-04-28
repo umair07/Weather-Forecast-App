@@ -3,9 +3,15 @@ package com.coeusassignmentone.weatherforecast.fragmens;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -13,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.coeusassignmentone.weatherforecast.R;
+import com.coeusassignmentone.weatherforecast.adapters.MajorCitiesListAdapter;
+import com.coeusassignmentone.weatherforecast.datamodel.CitiesWeatherDetailsModel;
 import com.coeusassignmentone.weatherforecast.location_manager.GPSTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +36,8 @@ public class MapLocationFragment extends Fragment {
 	private GoogleMap googleMap;
 	GPSTracker gpsTracker;
 	View rootView;
+	protected final static String TEMP_SYM_F = (char) 0x00B0 + "F";
+	protected final static String TEMP_SYM_C = (char) 0x00B0 + "C";
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -68,26 +78,32 @@ public class MapLocationFragment extends Fragment {
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
-
+		getActivity().registerReceiver(updateCitiesDataBroadCastReceiver,
+				new IntentFilter("majorcitiesupdate"));
 		try
 		{
+			SharedPreferences sharedPreferences = PreferenceManager
+					.getDefaultSharedPreferences(getActivity());
+			String seperator = "[**]";
+			String tempratureUnit = sharedPreferences.getString("currentCityData", "");
+			String[] splitedCityData = tempratureUnit.split(seperator);
+			
+			String cityName = splitedCityData[0];
+			
+			String tempratureValue = splitedCityData[2]; 
+			
 			Marker currentMarker = googleMap.addMarker(new MarkerOptions()
 			.position(current_Location_LatLong)
-			.title(getCityName(current_Location_LatLong.latitude , current_Location_LatLong.longitude))
-			.snippet(getCityName(current_Location_LatLong.latitude , current_Location_LatLong.longitude) +" is hot.")
+			.title(cityName)
+			.snippet(tempratureValue + TEMP_SYM_F + "\n" + convertTemprature(tempratureValue))
 			.icon((BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))));
-
+			
 			// Move the camera instantly to Pakistan with a zoom of 15.
 			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current_Location_LatLong, 15));
 
 			// Zoom in, animating the camera.
 			googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
-			addMarker(31.4292,73.0789,"Faislabad","Faislabad is hot too.",BitmapDescriptorFactory.HUE_RED);
-			addMarker(33.7167,73.0667,"Islamabad","Islamabad is hot",BitmapDescriptorFactory.HUE_CYAN);
-			addMarker(24.8600,67.0100,"Karachi","Karachi is hot",BitmapDescriptorFactory.HUE_MAGENTA);
-			addMarker(33.6000,73.0333,"Rawalpindi","Rawalpindi is hot",BitmapDescriptorFactory.HUE_YELLOW);
-			addMarker(30.19787,71.4697,"Multan","Multan is too hot",BitmapDescriptorFactory.HUE_ORANGE);
-			addMarker(32.4972,74.5361,"Sialkot","Sialkot is hot",BitmapDescriptorFactory.HUE_ROSE);
+			
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
@@ -112,7 +128,7 @@ public class MapLocationFragment extends Fragment {
 		try
 		{
 			// create marker
-			MarkerOptions marker = new MarkerOptions().position(new LatLng(pLatitude, pLongitude)).title("Hello Maps");
+			MarkerOptions marker = new MarkerOptions().position(new LatLng(pLatitude, pLongitude)).title("");
 
 			marker.title(pCityName);
 			marker.snippet(pMessage);
@@ -125,12 +141,12 @@ public class MapLocationFragment extends Fragment {
 			e.getStackTrace();
 		}
 	}
-	public String getCityName(double pLatitude, double pLongitude)
+	public String getCityName(LatLng latLng)
 	{
 		Geocoder geocoder = new Geocoder(getActivity(), Locale.ENGLISH);
 		String cityName = null;
 		try {
-			List<Address> addresses = geocoder.getFromLocation(pLatitude, pLongitude, 1);
+			List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
 
 			if(addresses != null) {
 				Address returnedAddress = addresses.get(0);
@@ -148,8 +164,53 @@ public class MapLocationFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onDetach();
 		try {
+			
+			getActivity().unregisterReceiver(updateCitiesDataBroadCastReceiver);
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
 	}
+	
+	// cities data Recevier
+	private final BroadcastReceiver updateCitiesDataBroadCastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			try {
+				addMarker(Double.parseDouble(intent.getStringExtra("lat")),Double.parseDouble(intent.getStringExtra("long")),intent.getStringExtra("city"),intent.getStringExtra("temp")+ TEMP_SYM_F + "\n" + convertTemprature(intent.getStringExtra("temp")),BitmapDescriptorFactory.HUE_RED);
+//				addMarker(33.7167,73.0667,"Islamabad","Islamabad is hot",BitmapDescriptorFactory.HUE_CYAN);
+//				addMarker(24.8600,67.0100,"Karachi","Karachi is hot",BitmapDescriptorFactory.HUE_MAGENTA);
+//				addMarker(33.6000,73.0333,"Rawalpindi","Rawalpindi is hot",BitmapDescriptorFactory.HUE_YELLOW);
+//				addMarker(30.19787,71.4697,"Multan","Multan is too hot",BitmapDescriptorFactory.HUE_ORANGE);
+//				addMarker(32.4972,74.5361,"Sialkot","Sialkot is hot",BitmapDescriptorFactory.HUE_ROSE);
+					
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+		}
+		
+		
+	};
+	
+	public String convertTemprature(String pTempratureValue)
+	{
+
+		String tempInCelcius="";
+		
+		try
+		{
+				double farnhiteTemprature = Double.parseDouble(pTempratureValue);
+				double celsiusValue = (farnhiteTemprature- 32) * (5 / 9.0);
+//				double finalTemprature_C =  (Math.round( celsiusValue * 100.0 ) / 100.0);
+				int finalTemprature_C = (int) (Math.round( celsiusValue * 100.0 ) / 100.0);
+				tempInCelcius = finalTemprature_C + TEMP_SYM_C;
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return tempInCelcius;
+	}
+	
+	
+	
 }

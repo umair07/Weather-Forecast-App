@@ -23,6 +23,7 @@
 
         <ImageView
             android:id="@+id/imageView_dashboard_timeticker"
+            android:visibility="gone"
             style="@style/style_imageView_dashboard_timeticker"
             android:background="@drawable/selector_btn_timeticker" />
 

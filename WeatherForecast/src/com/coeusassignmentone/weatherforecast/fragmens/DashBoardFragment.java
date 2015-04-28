@@ -5,22 +5,18 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +49,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 	GPSTracker gpsTracker;
 	double latitude,longitude;
 	public static double loc_latitude,loc_longitude;
+	public static String currentCityTempValue;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -66,7 +63,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 			// check if GPS enabled		
 			if(gpsTracker.canGetLocation()){
 
- 				latitude = gpsTracker.getLatitude();
+				latitude = gpsTracker.getLatitude();
 				longitude = gpsTracker.getLongitude();
 				loc_latitude = latitude;
 				loc_longitude = longitude;
@@ -144,7 +141,29 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 			break;
 		case R.id.imageView_dashboard_select_scale:
 			try {
-				convertTemprature(textView_dashboard_temprature.getText().toString());
+				
+				String[] splitedValuesTemprature = textView_dashboard_temprature.getText().toString().split(""+(char) 0x00B0);
+				String tempratureValue = splitedValuesTemprature[0];
+				String tempratureUnit = splitedValuesTemprature[1]; 
+				SharedPrefStoreData("tempUnit", "F");
+				SharedPreferences sharedPreferences = PreferenceManager
+						.getDefaultSharedPreferences(getActivity());
+				String lastTempValue = sharedPreferences.getString("lastTempValue", "");
+				if(tempratureUnit.contains("F"))
+				{
+					SharedPrefStoreData("tempUnit", "C");
+					convertTemprature(lastTempValue);
+				}
+				
+				else
+				{
+					
+					imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
+					textView_dashboard_temprature.setText(lastTempValue);
+					textView_dashboard_highest_temprature.setText(lastTempValue); 
+					textView_dashboard_lowest_temprature.setText(lastTempValue); 
+				}
+				
 			} catch (Exception e) {
 				e.getStackTrace();
 			}
@@ -230,9 +249,10 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			try {
-				imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
+
 				textView_dashboard_date.setText("Last Update: "+intent.getStringExtra("lastBuildDate"));
-				
+				SharedPrefStoreData("currentCityData", intent.getStringExtra("city") + "**" + intent.getStringExtra("temp"));
+					
 				if(!intent.getStringExtra("city").equals(""))
 				{
 					textView_dashboard_city.setText(intent.getStringExtra("city"));
@@ -254,7 +274,22 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 				}
 				if(!intent.getStringExtra("temp").equals(""))
 				{
-					textView_dashboard_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					SharedPreferences sharedPreferences = PreferenceManager
+							.getDefaultSharedPreferences(context);
+					String tempratureUnit = sharedPreferences.getString("tempUnit", "");
+					if(tempratureUnit.equals("C"))
+					{
+						convertTemprature(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
+					else if(tempratureUnit.equals("F"))
+					{
+						textView_dashboard_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
+					else
+					{
+						textView_dashboard_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
+
 				}
 				else
 				{
@@ -264,7 +299,23 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 				}
 				if(!intent.getStringExtra("temp").equals(""))
 				{
-					textView_dashboard_lowest_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					SharedPreferences sharedPreferences = PreferenceManager
+							.getDefaultSharedPreferences(context);
+					String tempratureUnit = sharedPreferences.getString("tempUnit", "");
+					SharedPrefStoreData("lastTempValue", intent.getStringExtra("temp") +TEMP_SYM_F);
+					currentCityTempValue = intent.getStringExtra("temp");
+					if(tempratureUnit.equals("C"))
+					{
+						convertTemprature(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
+					else if(tempratureUnit.equals("F"))
+					{
+						textView_dashboard_lowest_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
+					else
+					{
+						textView_dashboard_lowest_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
 
 				}
 				else
@@ -274,7 +325,23 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 				}
 				if(!intent.getStringExtra("temp").equals(""))
 				{
-					textView_dashboard_highest_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					SharedPreferences sharedPreferences = PreferenceManager
+							.getDefaultSharedPreferences(context);
+					String tempratureUnit = sharedPreferences.getString("tempUnit", "");
+					
+					if(tempratureUnit.equals("C"))
+					{
+						convertTemprature(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
+					else if(tempratureUnit.equals("F"))
+					{
+						textView_dashboard_highest_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
+					else
+					{
+						textView_dashboard_highest_temprature.setText(intent.getStringExtra("temp") +TEMP_SYM_F);
+					}
+
 
 				}
 				else
@@ -366,16 +433,19 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 	{
 
 		String[] splitedValuesTemprature = pTempratureValue.split(""+(char) 0x00B0);
+		
 		String tempratureValue = splitedValuesTemprature[0];
+		
 		String tempratureUnit = splitedValuesTemprature[1]; 
+		
 		try
 		{
 			if(tempratureUnit.contains("F"))
 			{
-
 				double farnhiteTemprature = Double.parseDouble(tempratureValue);
 				double celsiusValue = (farnhiteTemprature- 32) * (5 / 9.0);
-				double finalTemprature_C =  (Math.round( celsiusValue * 100.0 ) / 100.0);
+//				double finalTemprature_C =  (Math.round( celsiusValue * 100.0 ) / 100.0);
+				int finalTemprature_C = (int) (Math.round( celsiusValue * 100.0 ) / 100.0);
 				imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_f);
 				textView_dashboard_temprature.setText(finalTemprature_C + TEMP_SYM_C);
 				textView_dashboard_highest_temprature.setText(finalTemprature_C + TEMP_SYM_C); 
@@ -383,13 +453,13 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 			}
 			else if(tempratureUnit.contains("C"))
 			{
-				double celsuicTemprature = Double.parseDouble(tempratureValue);
-				double franhiteValue =  ((celsuicTemprature * 9 / 5.0) + 32);
-				int finalTemprature_F = (int) (Math.round( franhiteValue * 100.0 ) / 100.0);
-				imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
-				textView_dashboard_temprature.setText(finalTemprature_F + TEMP_SYM_F);
-				textView_dashboard_highest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
-				textView_dashboard_lowest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
+//				double celsuicTemprature = Double.parseDouble(tempratureValue);
+//				double franhiteValue =  ((celsuicTemprature * 9 / 5.0) + 32);
+//				int finalTemprature_F = (int) (Math.round( franhiteValue * 100.0 ) / 100.0);
+//				imageView_dashboard_select_scale.setImageResource(R.drawable.selector_btn_temprature_c);
+//				textView_dashboard_temprature.setText(finalTemprature_F + TEMP_SYM_F);
+//				textView_dashboard_highest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
+//				textView_dashboard_lowest_temprature.setText(finalTemprature_F + TEMP_SYM_F); 
 			}
 
 		} catch (Exception e) {
@@ -414,6 +484,16 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 		}
 		return cityName;
 	}
-	
-	
+
+
+	//save data in prefrences
+
+	public void SharedPrefStoreData(String tag, String value) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(getActivity());
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(tag, value);
+		editor.commit();
+	}
+
 }

@@ -13,6 +13,8 @@
             style="@style/style_textView_adapter_cities_name"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:maxLength="10"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -22,7 +24,8 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/textView_adapter_temprature_value"
@@ -30,8 +33,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:visibility="gone" />
+            android:textStyle="bold" />
 
         <ProgressBar
             android:id="@+id/progressBar_temprature_type"
@@ -40,14 +42,13 @@
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/textView_adapter_temprature_value" />
+            android:layout_toLeftOf="@+id/textView_adapter_temprature_value"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/imageView_adapter_temprature_type"
             style="@style/style_imageView_adapter_temprature_type"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/textView_adapter_temprature_value"
-            android:visibility="gone" />
+            />
     </RelativeLayout>
 
 </RelativeLayout>
