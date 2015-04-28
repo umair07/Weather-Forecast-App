@@ -83,18 +83,18 @@ public class MajorCityListFragment extends Fragment implements OnClickListener {
 
 			try {
 				CitiesWeatherDetailsModel citiesWeatherDetailsModel = new CitiesWeatherDetailsModel();
-				citiesWeatherDetailsModel.setCityName(intent.getStringExtra("city"));
+				citiesWeatherDetailsModel.setCitiesWeatheCityName(intent.getStringExtra("city"));
 				if(intent.getStringExtra("temp").equals("N/A"))
 				{
-					citiesWeatherDetailsModel.setTempratureValue(intent.getStringExtra("temp"));
+					citiesWeatherDetailsModel.setCitiesWeatheTempratureValue(intent.getStringExtra("temp"));
 
 				}
 				else
 				{
-					citiesWeatherDetailsModel.setTempratureValue(intent.getStringExtra("temp") + TEMP_SYM_F);
+					citiesWeatherDetailsModel.setCitiesWeatheTempratureValue(intent.getStringExtra("temp") + TEMP_SYM_F);
 
 				}
-				citiesWeatherDetailsModel.setWeatherType(intent.getStringExtra("text"));
+				citiesWeatherDetailsModel.setCitiesWeatheWeatherType(intent.getStringExtra("text"));
 				weatherCitiesData.add(citiesWeatherDetailsModel);
 
 					

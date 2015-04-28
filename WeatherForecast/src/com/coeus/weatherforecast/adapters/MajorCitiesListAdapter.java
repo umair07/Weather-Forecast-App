@@ -66,19 +66,19 @@ public class MajorCitiesListAdapter extends BaseAdapter {
 	
 		adapterCityName.setText(citiesNameList.get(position));
 		
-		if(!weatherCitiesData.get(position).getTempratureValue().equals(""))
+		if(!weatherCitiesData.get(position).getCitiesWeatheTempratureValue().equals(""))
 		{
 			
 			progressBarTempratureValue.setVisibility(View.GONE);
 			adapterTempratureValue.setVisibility(View.VISIBLE);
-			adapterTempratureValue.setText(weatherCitiesData.get(position).getTempratureValue());
+			adapterTempratureValue.setText(weatherCitiesData.get(position).getCitiesWeatheTempratureValue());
 
 		}
 		
 	
-		if(!weatherCitiesData.get(position).getWeatherType().equals(""))
+		if(!weatherCitiesData.get(position).getCitiesWeatheWeatherType().equals(""))
 		{
-			String  input = weatherCitiesData.get(position).getWeatherType();
+			String  input = weatherCitiesData.get(position).getCitiesWeatheWeatherType();
 			input = input.replace(" ", "");
 			progressBarTempratureImage.setVisibility(View.GONE);
 			adapterTempratureImage.setVisibility(View.VISIBLE);
