@@ -78,8 +78,7 @@ public class MapLocationFragment extends Fragment {
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
-		getActivity().registerReceiver(updateCitiesDataBroadCastReceiver,
-				new IntentFilter("majorcitiesupdate"));
+		
 		try
 		{
 			SharedPreferences sharedPreferences = PreferenceManager
@@ -103,7 +102,9 @@ public class MapLocationFragment extends Fragment {
 
 			// Zoom in, animating the camera.
 			googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
-			
+			   
+			getActivity().registerReceiver(updateCitiesDataBroadCastReceiver,
+					new IntentFilter("majorcitiesupdate"));
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
