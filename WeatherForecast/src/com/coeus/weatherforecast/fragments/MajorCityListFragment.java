@@ -1,4 +1,4 @@
-package com.coeus.weatherforecast.fragmens;
+package com.coeus.weatherforecast.fragments;
 
 import java.util.ArrayList;
 
@@ -38,6 +38,16 @@ public class MajorCityListFragment extends Fragment implements OnClickListener {
 		rootView = inflater.inflate(R.layout.fragment_major_city_list, container, false);
 		loadUIComponents();
 		registerClickListeners();
+		
+		//set major cities list
+		updateMajorCitiesLit();
+		getActivity().registerReceiver(updateCitiesDataBroadCastReceiver,
+				new IntentFilter("majorcitiesupdate"));
+		return rootView;
+	}
+
+	private void updateMajorCitiesLit() {
+		// TODO Auto-generated method stub
 		try
 		{
 		citiesNameList = new ArrayList<String>();
@@ -59,9 +69,6 @@ public class MajorCityListFragment extends Fragment implements OnClickListener {
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
-		getActivity().registerReceiver(updateCitiesDataBroadCastReceiver,
-				new IntentFilter("majorcitiesupdate"));
-		return rootView;
 	}
 
 	// Initialize all UI components

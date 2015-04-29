@@ -1,4 +1,4 @@
-package com.coeus.weatherforecast.fragmens;
+package com.coeus.weatherforecast.fragments;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -145,13 +145,13 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 				String[] splitedValuesTemprature = textView_dashboard_temprature.getText().toString().split(""+(char) 0x00B0);
 				String tempratureValue = splitedValuesTemprature[0];
 				String tempratureUnit = splitedValuesTemprature[1]; 
-				SharedPrefStoreData("tempUnit", "F");
+				sharedPrefStoreData("tempUnit", "F");
 				SharedPreferences sharedPreferences = PreferenceManager
 						.getDefaultSharedPreferences(getActivity());
 				String lastTempValue = sharedPreferences.getString("lastTempValue", "");
 				if(tempratureUnit.contains("F"))
 				{
-					SharedPrefStoreData("tempUnit", "C");
+					sharedPrefStoreData("tempUnit", "C");
 					convertTemprature(lastTempValue);
 				}
 				
@@ -251,7 +251,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 			try {
 
 				textView_dashboard_date.setText("Last Update: "+intent.getStringExtra("lastBuildDate"));
-				SharedPrefStoreData("currentCityData", intent.getStringExtra("city") + "**" + intent.getStringExtra("temp"));
+				sharedPrefStoreData("currentCityData", intent.getStringExtra("city") + "**" + intent.getStringExtra("temp"));
 					
 				if(!intent.getStringExtra("city").equals(""))
 				{
@@ -302,7 +302,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 					SharedPreferences sharedPreferences = PreferenceManager
 							.getDefaultSharedPreferences(context);
 					String tempratureUnit = sharedPreferences.getString("tempUnit", "");
-					SharedPrefStoreData("lastTempValue", intent.getStringExtra("temp") +TEMP_SYM_F);
+					sharedPrefStoreData("lastTempValue", intent.getStringExtra("temp") +TEMP_SYM_F);
 					currentCityTempValue = intent.getStringExtra("temp");
 					if(tempratureUnit.equals("C"))
 					{
@@ -488,7 +488,7 @@ public class DashBoardFragment extends Fragment implements OnClickListener {
 
 	//save data in prefrences
 
-	public void SharedPrefStoreData(String tag, String value) {
+	public void sharedPrefStoreData(String tag, String value) {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(getActivity());
 		SharedPreferences.Editor editor = prefs.edit();

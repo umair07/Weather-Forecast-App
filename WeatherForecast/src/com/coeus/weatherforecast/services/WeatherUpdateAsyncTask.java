@@ -17,7 +17,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.coeus.weatherforecast.datamodel.WeatherDetailsModel;
-import com.coeus.weatherforecast.fragmens.DashBoardFragment;
+import com.coeus.weatherforecast.fragments.DashBoardFragment;
 import com.coeus.weatherforecast.handlers.ServiceHandler;
 import com.coeus.weatherforecast.listener.UpdateWeatherDetailsListener;
 
@@ -72,7 +72,7 @@ public class WeatherUpdateAsyncTask extends AsyncTask<String, Void, String>{
 			 jsonResponseString = serviceHandler.makeServiceCall(
 					apiUrl,
 					ServiceHandler.GET);
-			 SharedPrefStoreData("apiResponse",jsonResponseString);
+			 sharedPrefStoreData("apiResponse",jsonResponseString);
 			}
 			else
 			{
@@ -151,7 +151,7 @@ public class WeatherUpdateAsyncTask extends AsyncTask<String, Void, String>{
 		}
 		return false;
 	}
-	public void SharedPrefStoreData(String tag, String value) {
+	public void sharedPrefStoreData(String tag, String value) {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		SharedPreferences.Editor editor = prefs.edit();
@@ -160,9 +160,11 @@ public class WeatherUpdateAsyncTask extends AsyncTask<String, Void, String>{
 	}
 	
 	// if Service not available this code will get the location 
-		 private String fetchCityNameUsingGoogleMap(double latitude, double longitude )
+	
+	private String fetchCityNameUsingGoogleMap(double latitude, double longitude )
 	     {
-			 final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient.newInstance(DashBoardFragment.class.getName());
+	
+		final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient.newInstance(DashBoardFragment.class.getName());
 
 	         String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + ","
 	                 + longitude + "&sensor=false&language=fr";

@@ -1,4 +1,4 @@
-package com.coeus.weatherforecast.fragmens;
+package com.coeus.weatherforecast.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,21 +44,37 @@ public class MapLocationFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-//		View rootView = inflater.inflate(R.layout.fragment_map_location, container, false);
-		
-		 if (rootView != null) {
-		        ViewGroup parent = (ViewGroup) rootView.getParent();
-		        if (parent != null)
-		            parent.removeView(rootView);
-		    }
-		    try {
-		    	rootView = inflater.inflate(R.layout.fragment_map_location, container, false);
-		    } catch (InflateException e) {
-//		    	return rootView;
-		        /* map is already there, just return view as it is */
-		    }
-		
-		
+		if (rootView != null) {
+			ViewGroup parent = (ViewGroup) rootView.getParent();
+			if (parent != null)
+				parent.removeView(rootView);
+		}
+		try {
+			rootView = inflater.inflate(R.layout.fragment_map_location, container, false);
+		} catch (InflateException e) {
+			//		    	return rootView;
+			/* map is already there, just return view as it is */
+		}
+
+		//loadMap
+		loadMap();
+
+		// Get current location and set data
+		setCurrentLocation();
+
+
+		getActivity().registerReceiver(updateCitiesDataBroadCastReceiver,
+				new IntentFilter("mapdrawpin"));
+
+		// Set other cities data
+		setMajorCitiesPin();
+
+
+		return rootView;
+	}
+
+	private void loadMap()
+	{
 		try
 		{
 			googleMap = ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map))
@@ -80,7 +96,10 @@ public class MapLocationFragment extends Fragment {
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
-		
+	}
+
+	private void setCurrentLocation()
+	{
 		try
 		{
 			SharedPreferences sharedPreferences = PreferenceManager
@@ -88,25 +107,31 @@ public class MapLocationFragment extends Fragment {
 			String seperator = "[**]";
 			String tempratureUnit = sharedPreferences.getString("currentCityData", "");
 			String[] splitedCityData = tempratureUnit.split(seperator);
-			
+
 			String cityName = splitedCityData[0];
-			
+
 			String tempratureValue = splitedCityData[2]; 
-			
+
 			Marker currentMarker = googleMap.addMarker(new MarkerOptions()
 			.position(current_Location_LatLong)
 			.title(cityName)
 			.snippet(tempratureValue + TEMP_SYM_F + "\n" + convertTemprature(tempratureValue))
 			.icon((BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))));
-			
+
 			// Move the camera instantly to Pakistan with a zoom of 15.
 			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current_Location_LatLong, 15));
 
 			// Zoom in, animating the camera.
 			googleMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
-			   
-			try
-			{
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+	}
+
+	private void setMajorCitiesPin()
+	{
+		try
+		{
 			citiesNameList = new ArrayList<String>();
 			citiesNameList.add("Lahore");
 			citiesNameList.add("Islamabad");
@@ -115,36 +140,18 @@ public class MapLocationFragment extends Fragment {
 			citiesNameList.add("Rawalpindi");
 			citiesNameList.add("Multan");
 			citiesNameList.add("Sialkot");
-			getActivity().registerReceiver(updateCitiesDataBroadCastReceiver,
-					new IntentFilter("mapdrawpin"));
+
 			for (int i = 0; i < citiesNameList.size(); i++) {
-				 startUpdateMapPinService = new Intent(getActivity(),MapDataUpdateService.class);
+				startUpdateMapPinService = new Intent(getActivity(),MapDataUpdateService.class);
 				startUpdateMapPinService.putExtra("cityname", citiesNameList.get(i));
 				getActivity().startService(startUpdateMapPinService);
 
 			}
-			} catch (Exception e) {
-				e.getStackTrace();
-			}
-			
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
-		return rootView;
-	}
-	// Initialize all UI components
-	public void loadUIComponents()
-	{
 
 	}
-
-	// Register Click Listeners
-	public void registerClickListeners()
-	{
-
-	}
-
-
 
 	public void addMarker(double pLatitude, double pLongitude, String pCityName , String pMessage, float hueColor)
 	{
@@ -187,13 +194,13 @@ public class MapLocationFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onDetach();
 		try {
-			
+
 			getActivity().unregisterReceiver(updateCitiesDataBroadCastReceiver);
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
 	}
-	
+
 	// cities data Recevier
 	private final BroadcastReceiver updateCitiesDataBroadCastReceiver = new BroadcastReceiver() {
 		@Override
@@ -201,39 +208,40 @@ public class MapLocationFragment extends Fragment {
 
 			try {
 				addMarker(Double.parseDouble(intent.getStringExtra("lat")),Double.parseDouble(intent.getStringExtra("long")),intent.getStringExtra("city"),intent.getStringExtra("temp")+ TEMP_SYM_F + "\n" + convertTemprature(intent.getStringExtra("temp")),BitmapDescriptorFactory.HUE_RED);
-//				addMarker(33.7167,73.0667,"Islamabad","Islamabad is hot",BitmapDescriptorFactory.HUE_CYAN);
-//				addMarker(24.8600,67.0100,"Karachi","Karachi is hot",BitmapDescriptorFactory.HUE_MAGENTA);
-//				addMarker(33.6000,73.0333,"Rawalpindi","Rawalpindi is hot",BitmapDescriptorFactory.HUE_YELLOW);
-//				addMarker(30.19787,71.4697,"Multan","Multan is too hot",BitmapDescriptorFactory.HUE_ORANGE);
-//				addMarker(32.4972,74.5361,"Sialkot","Sialkot is hot",BitmapDescriptorFactory.HUE_ROSE);
-					
+				//				addMarker(33.7167,73.0667,"Islamabad","Islamabad is hot",BitmapDescriptorFactory.HUE_CYAN);
+				//				addMarker(24.8600,67.0100,"Karachi","Karachi is hot",BitmapDescriptorFactory.HUE_MAGENTA);
+				//				addMarker(33.6000,73.0333,"Rawalpindi","Rawalpindi is hot",BitmapDescriptorFactory.HUE_YELLOW);
+				//				addMarker(30.19787,71.4697,"Multan","Multan is too hot",BitmapDescriptorFactory.HUE_ORANGE);
+				//				addMarker(32.4972,74.5361,"Sialkot","Sialkot is hot",BitmapDescriptorFactory.HUE_ROSE);
+
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			
+
 		}
-		
-		
+
+
 	};
-	
+
 	public String convertTemprature(String pTempratureValue)
 	{
 
 		String tempInCelcius="";
-		
+
 		try
 		{
-				double farnhiteTemprature = Double.parseDouble(pTempratureValue);
-				double celsiusValue = (farnhiteTemprature- 32) * (5 / 9.0);
-//				double finalTemprature_C =  (Math.round( celsiusValue * 100.0 ) / 100.0);
-				int finalTemprature_C = (int) (Math.round( celsiusValue * 100.0 ) / 100.0);
-				tempInCelcius = finalTemprature_C + TEMP_SYM_C;
+			double farnhiteTemprature = Double.parseDouble(pTempratureValue);
+			double celsiusValue = (farnhiteTemprature- 32) * (5 / 9.0);
+			//				double finalTemprature_C =  (Math.round( celsiusValue * 100.0 ) / 100.0);
+			int finalTemprature_C = (int) (Math.round( celsiusValue * 100.0 ) / 100.0);
+			tempInCelcius = finalTemprature_C + TEMP_SYM_C;
 		} catch (Exception e) {
 			e.getStackTrace();
 		}
 		return tempInCelcius;
 	}
-	
-	
-	
+
+
+
+
 }

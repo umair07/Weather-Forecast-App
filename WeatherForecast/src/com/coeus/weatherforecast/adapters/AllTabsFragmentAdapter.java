@@ -1,8 +1,8 @@
 package com.coeus.weatherforecast.adapters;
 
-import com.coeus.weatherforecast.fragmens.DashBoardFragment;
-import com.coeus.weatherforecast.fragmens.MajorCityListFragment;
-import com.coeus.weatherforecast.fragmens.MapLocationFragment;
+import com.coeus.weatherforecast.fragments.DashBoardFragment;
+import com.coeus.weatherforecast.fragments.MajorCityListFragment;
+import com.coeus.weatherforecast.fragments.MapLocationFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
